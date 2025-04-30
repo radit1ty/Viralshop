@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Halaman Kurir</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background-color: #f0f0f0; }
+    input, button { padding: 10px; margin-top: 10px; width: 100%; }
+    .box { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    button { background: #4caf50; color: white; border: none; cursor: pointer; }
+    #pesan { margin-top: 10px; color: green; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Halaman Kurir</h2>
+  <label for="resi">No Resi:</label>
+  <input type="text" id="resi" placeholder="Masukkan No Resi">
+  
+  <label for="lokasi">Lokasi Saat Ini:</label>
+  <input type="text" id="lokasi" placeholder="Contoh: Sedang dikirim ke Jakarta">
+
+  <button onclick="updateStatus()">Update Status</button>
+  <p id="pesan"></p>
+</div>
+
+<script>
+  function updateStatus() {
+    const resi = document.getElementById("resi").value.trim().toUpperCase();
+    const lokasi = document.getElementById("lokasi").value.trim();
+    const pesan = document.getElementById("pesan");
+
+    if (!resi || !lokasi) {
+      pesan.textContent = "Resi dan lokasi wajib diisi!";
+      pesan.style.color = "red";
+      return;
+    }
+
+    let orders = JSON.parse(localStorage.getItem("orders")) || [];
+    let found = false;
+
+    orders = orders.map(order => {
+      if (order.resi === resi) {
+        order.status = lokasi;
+        found = true;
+      }
+      return order;
+    });
+
+    if (found) {
+      localStorage.setItem("orders", JSON.stringify(orders));
+      pesan.textContent = "Status berhasil diperbarui.";
+      pesan.style.color = "green";
+    } else {
+      pesan.textContent = "Resi tidak ditemukan!";
+      pesan.style.color = "red";
+    }
+  }
+</script>
+
+</body>
+</html>
